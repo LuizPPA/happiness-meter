@@ -1,0 +1,113 @@
+input, select, textarea{
+  width: 100%;
+  background-color: white;
+}
+h4{
+  text-align: center;
+  display: block;
+}
+#canvas{
+  background-color: var(--hm-lighter-grey);
+  min-height: 100vh;
+}
+#form-area{
+  font-family: 'Open Sans Light';
+  background-color: white;
+  height: 70vh;
+  margin-top: 15vh;
+  width: 100%;
+}
+#form-name{
+  text-align: center;
+  margin-top: 12px;
+}
+#form{
+  margin-left: 12px;
+  margin-right: 12px;
+}
+#very-happy{
+  color: var(--very-happy);
+}
+#happy{
+  color: var(--happy);
+}
+#neutral{
+  color: var(--neutral);
+}
+#sad{
+  color: var(--sad);
+}
+#very-sad{
+  color: var(--very-sad);
+}
+#very-happy.active{
+  background-color: var(--very-happy) !important;
+}
+#happy.active{
+  background-color: var(--happy) !important;
+}
+#neutral.active{
+  background-color: var(--neutral) !important;
+}
+#sad.active{
+  background-color: var(--sad) !important;
+}
+#very-sad.active{
+  background-color: var(--very-sad) !important;
+}
+#form-end{
+  margin: 12px;
+}
+#previous-button{
+  margin-right: 12px;
+}
+.satisfaction-icon{
+  font-size: 60px;
+  margin: 12px;
+  cursor: pointer;
+}
+.active{
+  color: white !important;
+  border-radius: 12px;
+  padding: 5px;
+}
+.weak{
+  color: var(--hm-light-grey);
+}
+.right{
+  float: right;
+}
+.left{
+  float: left;
+}
+.fading-in{
+  animation-name: fade;
+  animation-duration: .8s;
+  animation-direction: reverse;
+  animation-fill-mode: forwards;
+}
+.fading-out{
+  animation-name: fade;
+  animation-duration: .8s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+
+@font-face {
+  font-family: 'Open Sans Light';
+  src: url('../assets/fonts/OpenSans/OpenSans-Light.ttf');
+}
+
+:root{
+  --hm-lighter-grey: #f3f3f3;
+  --hm-light-grey:	 #9d9d9d;
+  --very-happy:      #7eff18;
+  --happy:           #b1d600;
+  --neutral:         #d6d041;
+  --sad:             #ff8826;
+  --very-sad:        #ff3333;
+}
