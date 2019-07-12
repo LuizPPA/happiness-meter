@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/master.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Medidor de Felicidade</title>
+  </head>
+  <body>
+    <div id="canvas" class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+          <div id="form-area">
+            <div class="row">
+              <div class="col-12">
+                <h3 id="form-name">Medidor de Felicidade</h3>
+              </div>
+            </div>
+
+            <div id="form" class="row justify-content-center">
+            </div>
+
+            <div id="form-end" class="row">
+              <div class="col-6">
+                <p class="weak">(*) campos obrigatórios</p>
+              </div>
+              <div class="col-6">
+                <button id="next-button" type="button" class="btn btn-secondary right" onclick="next()">Próximo</button>
+                <button id="previous-button" type="button" class="btn btn-secondary right" onclick="previous()">Anterior</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/app.js" charset="utf-8"></script>
+    <script src="https://kit.fontawesome.com/52675a6560.js"></script>
+  </body>
+</html>
