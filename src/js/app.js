@@ -1,4 +1,5 @@
 let departments = [
+  'Selecionar',
   'Atendimento',
   'Administrativo',
   'Financeiro',
@@ -7,7 +8,7 @@ let departments = [
 let step = 1
 let form_data = {
   name: '',
-  department: null,
+  department: 'Selecionar',
   rate: null,
   commentary: '',
   suggestion: '',
@@ -15,7 +16,7 @@ let form_data = {
 }
 
 window.onload = () => {
-  load_step_one()
+  load_step_one(false)
 }
 
 window.onresize = () => {
@@ -36,8 +37,65 @@ let load_departments = () => {
     let option = document.createElement('option')
     option.value = department
     option.innerText = department
+    option.disabled = department == 'Selecionar'
     select_element.appendChild(option)
   })
+}
+
+let clear_form_element = () => {
+  let form = document.getElementById('form')
+  let first = form.firstElementChild
+  while (first) {
+      first.remove()
+      first = form.firstElementChild
+  }
+}
+
+let fade_form_out = () => {
+  let form = document.getElementById('form')
+  let form_end = document.getElementById('form-end')
+  form.className = 'row justify-content-center fading-out'
+  form_end.className = 'row fading-out'
+  setTimeout(() => {
+    form.className = 'row justify-content-center'
+    form_end.className = 'row'
+  }, 800)
+}
+
+let fade_form_in = () => {
+  let form = document.getElementById('form')
+  let form_end = document.getElementById('form-end')
+  form.className = 'row justify-content-center fading-in'
+  form_end.className = 'row fading-in'
+  setTimeout(() => {
+    form.className = 'row justify-content-center'
+    form_end.className = 'row'
+  }, 800)
+}
+
+let disable_previous = () => {
+  let button = document.getElementById('previous-button')
+  button.disabled = true
+}
+
+let enable_previous = () => {
+  let button = document.getElementById('previous-button')
+  button.disabled = false
+}
+
+let disable_next = () => {
+  let button = document.getElementById('next-button')
+  button.disabled = true
+}
+
+let enable_next = () => {
+  let button = document.getElementById('next-button')
+  button.disabled = false
+}
+
+let set_button_text = (text) => {
+  let button = document.getElementById('next-button')
+  button.innerText = text
 }
 
 let next = () =>{
@@ -72,37 +130,6 @@ let previous = () =>{
   }
 }
 
-let clear_form_element = () => {
-  let form = document.getElementById('form')
-  let first = form.firstElementChild
-  while (first) {
-      first.remove()
-      first = form.firstElementChild
-  }
-}
-
-let fade_form_out = () => {
-  let form = document.getElementById('form')
-  let form_end = document.getElementById('form-end')
-  form.className = 'row justify-content-center fading-out'
-  form_end.className = 'row fading-out'
-  setTimeout(() => {
-    form.className = 'row justify-content-center'
-    form_end.className = 'row'
-  }, 800)
-}
-
-let fade_form_in = () => {
-  let form = document.getElementById('form')
-  let form_end = document.getElementById('form-end')
-  form.className = 'row justify-content-center fading-in'
-  form_end.className = 'row fading-in'
-  setTimeout(() => {
-    form.className = 'row justify-content-center'
-    form_end.className = 'row'
-  }, 800)
-}
-
 let read_step_one = () => {
   let name_input = document.getElementById('name')
   let department_input = document.getElementById('department')
@@ -119,10 +146,13 @@ let read_step_three = () => {
   form_data.complaint = complaint_textarea.value
 }
 
-let load_step_one = () => {
-  fade_form_out()
+let load_step_one = (fade = true) => {
+  if(fade) fade_form_out()
   setTimeout(() => {
     clear_form_element()
+    disable_previous()
+    if(form_data.department == 'Selecionar') disable_next()
+    else enable_next()
     let form = document.getElementById('form')
     let name_col = get_col(12, 12, 6, 6)
     let name_input = get_input('name', form_data.name)
@@ -140,29 +170,17 @@ let load_step_one = () => {
     load_departments()
     department_select.value = form_data.department
     fade_form_in()
-  }, 800)
+  }, fade ? 800 : 0)
 }
 
 let load_step_two = () => {
   fade_form_out()
   setTimeout(() => {
     clear_form_element()
-    let form = document.getElementById('form')
-    let label_col = get_col(12, 12, 12, 12)
-    let label = document.createElement('h4')
-    let very_happy_button = get_vote_button('very-happy', 'grin', 5)
-    let happy_button = get_vote_button('happy', 'smile', 4)
-    let neutral_button = get_vote_button('neutral', 'meh', 3)
-    let sad_button = get_vote_button('sad', 'frown', 2)
-    let very_sad_button = get_vote_button('very-sad', 'sad-tear', 1)
-    label.innerText = 'Qual é seu nível de satisfação atual no trabalho?'
-    label_col.appendChild(label)
-    form.appendChild(label_col)
-    form.appendChild(very_happy_button)
-    form.appendChild(happy_button)
-    form.appendChild(neutral_button)
-    form.appendChild(sad_button)
-    form.appendChild(very_sad_button)
+    set_button_text('Próximo')
+    enable_previous()
+    if(form_data.rate == null) disable_next()
+    load_vote_buttons()
     adjust_sizes()
     fade_form_in()
   }, 800)
@@ -172,6 +190,7 @@ let load_step_three = () => {
   fade_form_out()
   setTimeout(() => {
     clear_form_element()
+    set_button_text('Enviar')
     let form = document.getElementById('form')
     let commentary_col = get_col(12, 12, 12, 12)
     let commentary_textarea = get_textarea('commentary', form_data.commentary)
@@ -199,22 +218,14 @@ let load_step_three = () => {
 let vote_satisfaction = (rate) => {
   form_data.rate = rate
   clear_form_element()
-  let form = document.getElementById('form')
-  let label_col = get_col(12, 12, 12, 12)
-  let label = document.createElement('h4')
-  let very_happy_button = get_vote_button('very-happy', 'grin', 5)
-  let happy_button = get_vote_button('happy', 'smile', 4)
-  let neutral_button = get_vote_button('neutral', 'meh', 3)
-  let sad_button = get_vote_button('sad', 'frown', 2)
-  let very_sad_button = get_vote_button('very-sad', 'sad-tear', 1)
-  label.innerText = 'Qual é seu nível de satisfação atual no trabalho?'
-  label_col.appendChild(label)
-  form.appendChild(label_col)
-  form.appendChild(very_happy_button)
-  form.appendChild(happy_button)
-  form.appendChild(neutral_button)
-  form.appendChild(sad_button)
-  form.appendChild(very_sad_button)
+  enable_next()
+  load_vote_buttons()
+}
+
+let department_selected = () => {
+  let department_input = document.getElementById('department')
+  if(department_input.value != 'Selecionar') enable_next()
+  else disable_next()
 }
 
 let send = () => {
@@ -241,6 +252,9 @@ let get_select = (name, value) => {
   select.id = name
   select.name = name
   select.value = value
+  select.onchange = () => {
+    department_selected()
+  }
   return select
 }
 
@@ -273,4 +287,23 @@ let get_label = (label_for, text) => {
   label.for = label_for
   label.innerText = text
   return label
+}
+
+let load_vote_buttons = () => {
+  let form = document.getElementById('form')
+  let label_col = get_col(12, 12, 12, 12)
+  let label = document.createElement('h4')
+  label.innerText = 'Qual é seu nível de satisfação atual no trabalho?*'
+  label_col.appendChild(label)
+  let very_happy_button = get_vote_button('very-happy', 'grin', 5)
+  let happy_button = get_vote_button('happy', 'smile', 4)
+  let neutral_button = get_vote_button('neutral', 'meh', 3)
+  let sad_button = get_vote_button('sad', 'frown', 2)
+  let very_sad_button = get_vote_button('very-sad', 'sad-tear', 1)
+  form.appendChild(label_col)
+  form.appendChild(very_sad_button)
+  form.appendChild(sad_button)
+  form.appendChild(neutral_button)
+  form.appendChild(happy_button)
+  form.appendChild(very_happy_button)
 }

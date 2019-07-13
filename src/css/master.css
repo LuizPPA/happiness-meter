@@ -65,11 +65,11 @@ h4{
   font-size: 60px;
   margin: 12px;
   cursor: pointer;
+  padding: 5px;
 }
 .active{
   color: white !important;
-  border-radius: 12px;
-  padding: 5px;
+  border-radius: 50%;
 }
 .weak{
   color: var(--hm-light-grey);
