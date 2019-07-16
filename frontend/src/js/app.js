@@ -230,6 +230,14 @@ let department_selected = () => {
 
 let send = () => {
   console.log(form_data)
+  let xhttp = new XMLHttpRequest()
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      
+    }
+  }
+  xhttp.open("GET", "https://gidplay-0001.firebaseio.com/texts.json", true)
+  xhttp.send()
 }
 
 let get_col = (xs_size, sm_size, md_size, lg_size) => {
