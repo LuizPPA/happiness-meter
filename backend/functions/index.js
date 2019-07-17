@@ -17,33 +17,43 @@ exports.post_rate = functions.https.onRequest(async (request, response) => {
     response.status(200).send("OK")
     return
   }
-
-  const user_rate = request.body.user_rate
+  const user_rate = JSON.parse(request.body)
   if (user_rate === undefined || user_rate.rate === undefined || user_rate.department === undefined) {
     return response.status(403).send('Please, provide the required info')
   }
   await admin.database().ref('/rates').push(user_rate)
-  const email_data = await admin.database().ref('/emails')
-
-  // let message = 'Um funcionário postou uma nova avaliação do ambiente de trabalho.'
-  //
-  // var email = {
-  //   to: email_data.admin,
-  //   subject: 'Nova avaliação de funcionário',
-  //   text: message,
-  //   html: '<p>'+message+'</p>'
-  // }
-  // var smtpConfig = {
-  //   host: 'smtp.gmail.com',
-  //   port: 587,
-  //   secure: false,
-  //   auth: {
-  //     user: email_data.sender,
-  //     pass: email_data.sender_password
-  //   }
-  // }
-  // let transporter = nodemailer.createTransport(smtpConfig)
-  // transporter.sendMail(email)
-
+  await admin.database().ref('/emails').once('value',
+    email_data => {
+      let message = 'Um funcionário postou uma nova avaliação do ambiente de trabalho.'
+      Object.keys(user_rate).forEach(
+        key => {
+          let value = user_rate[key]
+          if (value !== null && value !== '') {
+            message = message + '\n' + key + ': ' + value
+          }
+        }
+      )
+      let email = {
+        to: email_data.admin,
+        subject: 'Nova avaliação de funcionário',
+        text: message,
+        html: '<p>'+message+'</p>'
+      }
+      let smtp_config = {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: email_data.sender,
+          pass: email_data.sender_password
+        }
+      }
+      let transporter = nodemailer.createTransport(smtp_config)
+      transporter.sendMail(email)
+    },
+    error => {
+      console.log(JSON.stringify(error))
+    }
+  )
   return response.status(200).send("OK")
 })

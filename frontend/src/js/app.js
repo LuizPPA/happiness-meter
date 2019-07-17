@@ -229,15 +229,15 @@ let department_selected = () => {
 }
 
 let send = () => {
-  console.log(form_data)
   let xhttp = new XMLHttpRequest()
-  xhttp.onreadystatechange = function() {
+  xhttp.onreadystatechange = () => {
     if (this.readyState == 4 && this.status == 200) {
-      
+      console.log('sent')
     }
   }
-  xhttp.open("GET", "https://gidplay-0001.firebaseio.com/texts.json", true)
-  xhttp.send()
+  xhttp.open("POST", "https://us-central1-hapiness-meter.cloudfunctions.net/post_rate", true)
+  // xhttp.open("POST", "http://localhost:5000/hapiness-meter/us-central1/post_rate", true)
+  xhttp.send(JSON.stringify(form_data))
 }
 
 let get_col = (xs_size, sm_size, md_size, lg_size) => {
