@@ -229,15 +229,45 @@ let department_selected = () => {
 }
 
 let send = () => {
+  disable_next()
+  disable_previous()
   let xhttp = new XMLHttpRequest()
   xhttp.onreadystatechange = () => {
-    if (this.readyState == 4 && this.status == 200) {
-      console.log('sent')
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      finish()
+    }
+    if(xhttp.readyState == 4 && xhttp.status != 200){
+      enable_next()
+      enable_previous()
     }
   }
   xhttp.open("POST", "https://us-central1-hapiness-meter.cloudfunctions.net/post_rate", true)
   // xhttp.open("POST", "http://localhost:5000/hapiness-meter/us-central1/post_rate", true)
   xhttp.send(JSON.stringify(form_data))
+}
+
+let finish = () => {
+  fade_form_out()
+  setTimeout(() => {
+    clear_form_element()
+    disable_next()
+    disable_previous()
+    let form_element = document.getElementById('form')
+    let header_col = get_col(12, 12, 12, 12)
+    let message_col = get_col(12, 12, 12, 12)
+    let header = document.createElement('h3')
+    let message = document.createElement('p')
+    header.innerText = 'Avaliação enviada'
+    message.innerText = 'Obrigado pelo seu feedback, dessa forma poderemos criar um ambiente mais agradável e produtivo.'
+    header.style.textAlign = 'center'
+    message.style.textAlign = 'center'
+    header_col.appendChild(header)
+    message_col.appendChild(message)
+    form_element.appendChild(header_col)
+    form_element.appendChild(message_col)
+    adjust_sizes()
+    fade_form_in()
+  }, 800)
 }
 
 let get_col = (xs_size, sm_size, md_size, lg_size) => {
