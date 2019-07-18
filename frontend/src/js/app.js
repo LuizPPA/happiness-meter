@@ -1,9 +1,16 @@
 let departments = [
   'Selecionar',
-  'Atendimento',
-  'Administrativo',
+  'Central de Reservas',
+  'Central de Relacionamento',
+  'TVC',
+  'RM',
+  'Marketing',
+  'Comercial',
+  'Eventos Interno',
   'Financeiro',
-  'TI'
+  'Contabilidade',
+  'RH',
+  'Departamento Pessoal'
 ]
 let step = 1
 let form_data = {
@@ -40,6 +47,7 @@ let load_departments = () => {
     option.disabled = department == 'Selecionar'
     select_element.appendChild(option)
   })
+  select_element.value = form_data.department
 }
 
 let clear_form_element = () => {
@@ -147,9 +155,7 @@ let read_step_three = () => {
 }
 
 let load_step_one = (fade = true) => {
-  if(fade) fade_form_out()
-  setTimeout(() => {
-    clear_form_element()
+  form_transition_animation(() => {
     disable_previous()
     if(form_data.department == 'Selecionar') disable_next()
     else enable_next()
@@ -166,30 +172,21 @@ let load_step_one = (fade = true) => {
     department_col.appendChild(department_select)
     form.appendChild(name_col)
     form.appendChild(department_col)
-    adjust_sizes()
     load_departments()
-    department_select.value = form_data.department
-    fade_form_in()
-  }, fade ? 800 : 0)
+  }, fade)
 }
 
 let load_step_two = () => {
-  fade_form_out()
-  setTimeout(() => {
-    clear_form_element()
+  form_transition_animation(() => {
     set_button_text('Próximo')
     enable_previous()
     if(form_data.rate == null) disable_next()
     load_vote_buttons()
-    adjust_sizes()
-    fade_form_in()
-  }, 800)
+  })
 }
 
 let load_step_three = () => {
-  fade_form_out()
-  setTimeout(() => {
-    clear_form_element()
+  form_transition_animation(() => {
     set_button_text('Enviar')
     let form = document.getElementById('form')
     let commentary_col = get_col(12, 12, 12, 12)
@@ -210,9 +207,35 @@ let load_step_three = () => {
     form.appendChild(commentary_col)
     form.appendChild(suggestion_col)
     form.appendChild(complaint_col)
-    adjust_sizes()
-    fade_form_in()
-  }, 800)
+  })
+}
+
+let finish = () => {
+  form_data = {
+    name: '',
+    department: 'Selecionar',
+    rate: null,
+    commentary: '',
+    suggestion: '',
+    complaint: ''
+  }
+  form_transition_animation(() => {
+    disable_next()
+    disable_previous()
+    let form_element = document.getElementById('form')
+    let header_col = get_col(12, 12, 12, 12)
+    let message_col = get_col(12, 12, 12, 12)
+    let header = document.createElement('h3')
+    let message = document.createElement('p')
+    header.innerText = 'Avaliação enviada'
+    message.innerText = 'Obrigado pelo seu feedback, dessa forma poderemos criar um ambiente mais agradável e produtivo.'
+    header.style.textAlign = 'center'
+    message.style.textAlign = 'center'
+    header_col.appendChild(header)
+    message_col.appendChild(message)
+    form_element.appendChild(header_col)
+    form_element.appendChild(message_col)
+  })
 }
 
 let vote_satisfaction = (rate) => {
@@ -246,33 +269,9 @@ let send = () => {
   xhttp.send(JSON.stringify(form_data))
 }
 
-let finish = () => {
-  fade_form_out()
-  setTimeout(() => {
-    clear_form_element()
-    disable_next()
-    disable_previous()
-    let form_element = document.getElementById('form')
-    let header_col = get_col(12, 12, 12, 12)
-    let message_col = get_col(12, 12, 12, 12)
-    let header = document.createElement('h3')
-    let message = document.createElement('p')
-    header.innerText = 'Avaliação enviada'
-    message.innerText = 'Obrigado pelo seu feedback, dessa forma poderemos criar um ambiente mais agradável e produtivo.'
-    header.style.textAlign = 'center'
-    message.style.textAlign = 'center'
-    header_col.appendChild(header)
-    message_col.appendChild(message)
-    form_element.appendChild(header_col)
-    form_element.appendChild(message_col)
-    adjust_sizes()
-    fade_form_in()
-  }, 800)
-}
-
 let get_col = (xs_size, sm_size, md_size, lg_size) => {
   let col = document.createElement('div')
-  col.className = 'col-'+xs_size+' col-sm-'+sm_size+' col-md-'+md_size+' col-lg-'+lg_size
+  col.className = `col-${xs_size} col-sm-${sm_size} col-md-${md_size} col-lg-${lg_size}`
   return col
 }
 
@@ -309,10 +308,10 @@ let get_vote_button = (type, icon, vote) => {
   let button = document.createElement('i')
   button.id = type
   if (vote == form_data.rate) {
-    button.className = 'satisfaction-icon active far fa-'+icon
+    button.className = `satisfaction-icon active far fa-${icon}`
   }
   else{
-    button.className = 'satisfaction-icon far fa-'+icon
+    button.className = `satisfaction-icon far fa-${icon}`
   }
   button.onclick = () => {
     vote_satisfaction(vote)
@@ -344,4 +343,14 @@ let load_vote_buttons = () => {
   form.appendChild(neutral_button)
   form.appendChild(happy_button)
   form.appendChild(very_happy_button)
+}
+
+let form_transition_animation = (callback, fade = true) => {
+  if(fade) fade_form_out()
+  setTimeout(() => {
+    clear_form_element()
+    callback()
+    adjust_sizes()
+    fade_form_in()
+  }, fade ? 800 : 0)
 }

@@ -29,7 +29,7 @@ exports.post_rate = functions.https.onRequest(async (request, response) => {
         key => {
           let value = user_rate[key]
           if (value !== null && value !== '') {
-            message = message + '\n' + key + ': ' + value
+            message = `${message}\n${key}: ${value}`
           }
         }
       )
@@ -37,7 +37,7 @@ exports.post_rate = functions.https.onRequest(async (request, response) => {
         to: email_data.admin,
         subject: 'Nova avaliação de funcionário',
         text: message,
-        html: '<p>'+message+'</p>'
+        html: `<p>${message}</p>`
       }
       let smtp_config = {
         host: 'smtp.gmail.com',
