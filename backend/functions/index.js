@@ -41,7 +41,63 @@ exports.resume = functions.https.onRequest(async (request, response) => {
   }
 
   let rates_resume = {
-    average_rates: [],
+    average_rates: [
+      {
+        department: 'Central de Reservas',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'Central de Relacionamento',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'TVC',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'RM',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'Marketing',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'Comercial',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'Eventos Interno',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'Financeiro',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'Contabilidade',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'RH',
+        rate: 0,
+        total: 0
+      },
+      {
+        department: 'Departamento Pessoal',
+        rate: 0,
+        total: 0
+      },
+    ],
     responses: []
   }
 
@@ -54,21 +110,15 @@ exports.resume = functions.https.onRequest(async (request, response) => {
         let department_group = rates_resume.average_rates.find(rate_group => {
           return rate_group.department === rate_instance.department
         })
-        if(department_group === undefined){
-          department_group = {
-            department: rate_instance.department,
-            rate: rate_instance.rate,
-            total: 1
-          }
-          rates_resume.average_rates.push(department_group)
-        }
-        else{
+        if(department_group !== undefined){
           department_group.rate += rate_instance.rate
           department_group.total += 1
         }
       })
       rates_resume.average_rates.forEach(average_rate => {
-        average_rate.rate = average_rate.rate/average_rate.total
+        if(average_rate.total !== 0){
+          average_rate.rate = average_rate.rate/average_rate.total
+        }
       })
       return response.status(200).send(rates_resume)
     }

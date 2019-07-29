@@ -17,9 +17,7 @@ let form_data = {
   briefing: '',
   department: 'Selecionar',
   rate: null,
-  commentary: '',
-  suggestion: '',
-  complaint: ''
+  justification: ''
 }
 
 window.onload = () => {
@@ -146,12 +144,8 @@ let read_step_one = () => {
 }
 
 let read_step_three = () => {
-  let commentary_textarea = document.getElementById('commentary')
-  let suggestion_textarea = document.getElementById('suggestion')
-  let complaint_textarea = document.getElementById('complaint')
-  form_data.commentary = commentary_textarea.value
-  form_data.suggestion = suggestion_textarea.value
-  form_data.complaint = complaint_textarea.value
+  let justification_textarea = document.getElementById('justification')
+  form_data.justification = justification_textarea.value
 }
 
 let load_step_one = (fade = true) => {
@@ -193,35 +187,28 @@ let load_step_three = () => {
   form_transition_animation(() => {
     set_button_text('Enviar')
     let form = document.getElementById('form')
-    let commentary_col = get_col(12, 12, 12, 12)
-    let commentary_textarea = get_textarea('commentary', form_data.commentary)
-    let commentary_label = get_label('commentary', 'Comentário')
-    commentary_col.appendChild(commentary_label)
-    commentary_col.appendChild(commentary_textarea)
-    let suggestion_col = get_col(12, 12, 12, 12)
-    let suggestion_textarea = get_textarea('suggestion', form_data.suggestion)
-    let suggestion_label = get_label('suggestion', 'Sugestão')
-    suggestion_col.appendChild(suggestion_label)
-    suggestion_col.appendChild(suggestion_textarea)
-    let complaint_col = get_col(12, 12, 12, 12)
-    let complaint_textarea = get_textarea('complaint', form_data.complaint)
-    let complaint_label = get_label('complaint', 'Reclamação')
-    complaint_col.appendChild(complaint_label)
-    complaint_col.appendChild(complaint_textarea)
-    form.appendChild(commentary_col)
-    form.appendChild(suggestion_col)
-    form.appendChild(complaint_col)
+    let justification_col = get_col(12, 12, 12, 12)
+    let justification_textarea = get_textarea('justification', form_data.justification)
+    let justification_text = 'Justificativa'
+    if(form_data.rate > 3){
+      justification_text = 'O que te deixa feliz trabalhando conosco?*'
+    }
+    else{
+      justification_text = 'O que falta para que você se sinta feliz trabalhando conosco?*'
+    }
+    let justification_label = get_label('justification', justification_text)
+    justification_col.appendChild(justification_label)
+    justification_col.appendChild(justification_textarea)
+    form.appendChild(justification_col)
   })
 }
 
 let finish = () => {
   form_data = {
-    name: '',
+    briefing: '',
     department: 'Selecionar',
     rate: null,
-    commentary: '',
-    suggestion: '',
-    complaint: ''
+    justification: ''
   }
   form_transition_animation(() => {
     disable_next()
@@ -275,7 +262,7 @@ let send = () => {
     }
   }
   xhttp.open("POST", "https://us-central1-hapiness-meter.cloudfunctions.net/post_rate", true)
-  // xhttp.open("POST", "http://localhost:5000/hapiness-meter/us-central1/post_rate", true)
+  form_data['datetime'] = new Date().toLocaleString()
   xhttp.send(JSON.stringify(form_data))
 }
 

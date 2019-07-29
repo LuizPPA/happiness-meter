@@ -30,9 +30,13 @@ h4{
 #page-subtitle{
   text-align: center;
 }
-#form,#resume{
+#form{
   margin-left: 12px;
   margin-right: 12px;
+}
+#resume{
+  padding-left: 20px;
+  padding-right: 20px;
 }
 #briefing-col {
   margin-top: 22px;
@@ -76,6 +80,15 @@ h4{
 #previous-button{
   margin-right: 12px;
 }
+#code-button{
+  margin-top: 12px;
+}
+#average-section-title,#responses-section-title{
+  text-align: center;
+}
+#responses-section-title{
+  margin-top: 52px;
+}
 .satisfaction-icon{
   font-size: 60px;
   margin: 12px;
@@ -109,16 +122,19 @@ h4{
 .department-average{
   font-size: 16px;
   margin-top: 12px;
+  border: 1px solid rgb(215, 215, 215);
+  border-radius: 12px;
 }
 .department-name{
   font-weight: bold;
 }
 .response{
   text-align: left;
-  margin-top: 22px;
   line-height: 18px;
-  margin-left: 12px;
-  margin-right: 12px;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid rgb(215, 215, 215);
+  border-radius: 12px;
 }
 
 @keyframes fade {

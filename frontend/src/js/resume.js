@@ -3,21 +3,6 @@ let resume_data = {
   responses: []
 }
 
-let departments = [
-  'Selecionar',
-  'Central de Reservas',
-  'Central de Relacionamento',
-  'TVC',
-  'RM',
-  'Marketing',
-  'Comercial',
-  'Eventos Interno',
-  'Financeiro',
-  'Contabilidade',
-  'RH',
-  'Departamento Pessoal'
-]
-
 let access_code = ''
 
 window.onload = () => {
@@ -37,6 +22,7 @@ let prompt_code = () => {
   let button_row = get_row('send-row', true)
   let button_col = get_col(12, 8, 4, 4)
   let button = get_button('send-code-button', send_code, 'Enviar')
+  button.id = 'code-button'
   button_col.appendChild(button)
   button_row.appendChild(button_col)
   code_col.appendChild(label)
@@ -67,11 +53,23 @@ let load_resume = () => {
   clear_resume_element()
   let resume = document.getElementById('resume')
   let average_row = get_row('average-row', false)
+  let average_section_title_col = get_col(12, 12, 12, 12)
+  let average_section_title = document.createElement('h4')
+  average_section_title.id = 'average-section-title'
+  average_section_title.innerText = 'Média de avaliações dos departamentos'
+  average_section_title_col.appendChild(average_section_title)
+  average_row.appendChild(average_section_title_col)
   let average_cols = load_average_cols()
   average_cols.forEach(col => {
     average_row.appendChild(col)
   })
   responses_row = get_row('responses-row', false)
+  let responses_section_title_col = get_col(12, 12, 12, 12)
+  let responses_section_title = document.createElement('h4')
+  responses_section_title.id = 'responses-section-title'
+  responses_section_title.innerText = 'Avaliações individuais'
+  responses_section_title_col.appendChild(responses_section_title)
+  responses_row.appendChild(responses_section_title_col)
   let response_cols = load_response_cols()
   response_cols.forEach(col => {
     responses_row.appendChild(col)
@@ -106,29 +104,28 @@ let load_response_cols = () => {
     let response_col = get_col(12, 12, 12, 12)
     response_col.classList.add('response')
     let response_department = document.createElement('p')
-    let response_name = document.createElement('p')
+    let response_briefing = document.createElement('p')
     let response_rate = document.createElement('p')
-    let response_commentary = document.createElement('p')
-    let response_suggestion = document.createElement('p')
-    let response_complaint = document.createElement('p')
+    let response_justification = document.createElement('p')
     response_department.className = 'response-department'
-    response_name.className = 'response-name'
+    response_briefing.className = 'response-name'
     response_rate.className = 'response-rate'
-    response_commentary.className = 'response-commentary'
-    response_suggestion.className = 'response-suggestion'
-    response_complaint.className = 'response-complaint'
-    response_department.innerText = `Departamento: ${response.department}`
-    null_or_empty(response.name) ? response_name.innerText = 'Nome: Não informado' : response_name.innerText = `Nome: ${response.name}`
-    response_rate.innerText = `Avaliação: ${response.rate}`
-    response_commentary.innerText = `Comentário: ${response.commentary}`
-    response_suggestion.innerText = `Sugestão: ${response.suggestion}`
-    response_complaint.innerText = `Reclamação: ${response.complaint}`
+    response_justification.className = 'response-justification'
+    response_department.innerHTML = `<b>Departamento:</b> ${response.department}`
+    response_briefing.innerHTML = `<b>Para você, o que é ser feliz no trabalho?</b><br>${response.briefing}`
+    response_rate.innerHTML = `<b>Avaliação:</b> ${response.rate}`
+    let justification_label = 'Justificativa'
+    if(response.rate > 3){
+      justification_label = 'O que te deixa feliz trabalhando conosco?'
+    }
+    else{
+      justification_label = 'O que falta para que você se sinta feliz trabalhando conosco?'
+    }
+    response_justification.innerHTML = `<b>${justification_label}</b><br>${response.justification}`
     response_col.appendChild(response_department)
-    response_col.appendChild(response_name)
+    response_col.appendChild(response_briefing)
     response_col.appendChild(response_rate)
-    response_col.appendChild(response_commentary)
-    response_col.appendChild(response_suggestion)
-    response_col.appendChild(response_complaint)
+    response_col.appendChild(response_justification)
     return response_col
   })
   return response_cols
