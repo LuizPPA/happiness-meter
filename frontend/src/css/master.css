@@ -10,20 +10,35 @@ h4{
   background-color: var(--hm-lighter-grey);
   min-height: 100vh;
 }
-#form-area{
+#form-area,#resume-area{
   font-family: 'Open Sans Light';
   background-color: white;
-  height: 70vh;
   margin-top: 15vh;
   width: 100%;
 }
-#form-name{
-  text-align: center;
-  margin-top: 12px;
+#resume-area{
+  min-height: 70vh;
+  margin-bottom: 15vh;
 }
-#form{
+#form-area{
+  height: 70vh;
+}
+#page-title{
+  margin-top: 12px;
+  text-align: center;
+}
+#page-subtitle{
+  text-align: center;
+}
+#form,#resume{
   margin-left: 12px;
   margin-right: 12px;
+}
+#briefing-col {
+  margin-top: 22px;
+}
+#briefing{
+  margin-top: auto;
 }
 #very-happy{
   color: var(--very-happy);
@@ -90,6 +105,20 @@ h4{
   animation-name: fade;
   animation-duration: .8s;
   animation-fill-mode: forwards;
+}
+.department-average{
+  font-size: 16px;
+  margin-top: 12px;
+}
+.department-name{
+  font-weight: bold;
+}
+.response{
+  text-align: left;
+  margin-top: 22px;
+  line-height: 18px;
+  margin-left: 12px;
+  margin-right: 12px;
 }
 
 @keyframes fade {

@@ -28,9 +28,52 @@ exports.post_rate = functions.https.onRequest(async (request, response) => {
   response.status(200).send("OK")
 })
 
-const resume = async () => {
+exports.resume = functions.https.onRequest(async (request, response) => {
+  // Setting response headers
+  response.set('Access-Control-Allow-Origin', "*")
+  response.set('Access-Control-Allow-Methods', 'GET, POST')
+  response.set('Access-Control-Allow-Headers', 'content-type')
 
-}
+  // Allowing preflight requests
+  if (request.method === "OPTIONS") {
+    response.status(200).send("OK")
+    return
+  }
+
+  let rates_resume = {
+    average_rates: [],
+    responses: []
+  }
+
+  await admin.database().ref('/rates').once('value',
+    async rate_data_str => {
+      let rate_data = JSON.parse(JSON.stringify(rate_data_str))
+      Object.keys(rate_data).forEach(rate_key => {
+        let rate_instance = rate_data[rate_key]
+        rates_resume.responses.push(rate_instance)
+        let department_group = rates_resume.average_rates.find(rate_group => {
+          return rate_group.department === rate_instance.department
+        })
+        if(department_group === undefined){
+          department_group = {
+            department: rate_instance.department,
+            rate: rate_instance.rate,
+            total: 1
+          }
+          rates_resume.average_rates.push(department_group)
+        }
+        else{
+          department_group.rate += rate_instance.rate
+          department_group.total += 1
+        }
+      })
+      rates_resume.average_rates.forEach(average_rate => {
+        average_rate.rate = average_rate.rate/average_rate.total
+      })
+      return response.status(200).send(rates_resume)
+    }
+  )
+})
 
 exports.resume_http = functions.https.onRequest(async (request, response) => {
   // Setting response headers
@@ -46,7 +89,7 @@ exports.resume_http = functions.https.onRequest(async (request, response) => {
 
   await admin.database().ref('/emails').once('value',
     async email_data_str => {
-      email_data = JSON.parse(JSON.stringify(email_data_str))
+      let email_data = JSON.parse(JSON.stringify(email_data_str))
       const sender = email_data.sender
       let message = 'Um funcionário postou uma nova avaliação do ambiente de trabalho.'
       let email = {

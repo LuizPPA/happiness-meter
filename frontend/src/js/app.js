@@ -14,7 +14,7 @@ let departments = [
 ]
 let step = 1
 let form_data = {
-  name: '',
+  briefing: '',
   department: 'Selecionar',
   rate: null,
   commentary: '',
@@ -139,10 +139,10 @@ let previous = () =>{
 }
 
 let read_step_one = () => {
-  let name_input = document.getElementById('name')
   let department_input = document.getElementById('department')
-  form_data.name = name_input.value
+  let briefing_input = document.getElementById('briefing')
   form_data.department = department_input.value
+  form_data.briefing = briefing_input.value
 }
 
 let read_step_three = () => {
@@ -157,21 +157,25 @@ let read_step_three = () => {
 let load_step_one = (fade = true) => {
   form_transition_animation(() => {
     disable_previous()
-    if(form_data.department == 'Selecionar') disable_next()
+    if(form_data.department == 'Selecionar' || form_data.briefing == '') disable_next()
     else enable_next()
     let form = document.getElementById('form')
-    let name_col = get_col(12, 12, 6, 6)
-    let name_input = get_input('name', form_data.name)
-    let name_label = get_label('name', 'Nome')
-    name_col.appendChild(name_label)
-    name_col.appendChild(name_input)
+    let briefing_col = get_col(12, 12, 12, 12)
+    let briefing_input = get_textarea('briefing', form_data.briefing, 3)
+    let briefing_label = get_label('briefing', 'Para você, o que é ser feliz no trabalho?*')
+    briefing_col.id = 'briefing-col'
+    briefing_col.appendChild(briefing_label)
+    briefing_col.appendChild(briefing_input)
+    briefing_input.oninput = () => {
+      check_enable()
+    }
     let department_col = get_col(12, 12, 6, 6)
     let department_select = get_select('department', form_data.department)
     let department_label = get_label('department', 'Departamento*')
     department_col.appendChild(department_label)
     department_col.appendChild(department_select)
-    form.appendChild(name_col)
     form.appendChild(department_col)
+    form.appendChild(briefing_col)
     load_departments()
   }, fade)
 }
@@ -245,10 +249,16 @@ let vote_satisfaction = (rate) => {
   load_vote_buttons()
 }
 
-let department_selected = () => {
+let check_enable = () => {
   let department_input = document.getElementById('department')
-  if(department_input.value != 'Selecionar') enable_next()
-  else disable_next()
+  let briefing_input = document.getElementById('briefing')
+  if(briefing_input == null || department_input == null){
+    disable_next()
+  }
+  else{
+    if(department_input.value != 'Selecionar' && briefing_input.value != '') enable_next()
+    else disable_next()
+  }
 }
 
 let send = () => {
@@ -290,7 +300,7 @@ let get_select = (name, value) => {
   select.name = name
   select.value = value
   select.onchange = () => {
-    department_selected()
+    check_enable()
   }
   return select
 }
